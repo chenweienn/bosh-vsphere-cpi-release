@@ -8,11 +8,39 @@ namespace :swagger do
   
     rm_rf(["./lib/nsxt_manager_client/*"])
 
+    # Trim unneeded endpoints; NSX-T 2.5.1 has 872, we only need 20
+    sh [
+      "jq",
+      '\'.paths |= {
+        "/fabric/vifs",
+        "/fabric/virtual-machines",
+        "/loadbalancer/pools",
+        "/loadbalancer/pools/{pool-id}",
+        "/logical-ports/{lport-id}",
+        "/ns-groups",
+        "/ns-groups/unassociated-virtual-machines",
+        "/ns-groups/{ns-group-id}",
+        "/ns-groups/{ns-group-id}/effective-directory-group-members",
+        "/ns-groups/{ns-group-id}/effective-ip-address-members",
+        "/ns-groups/{ns-group-id}/effective-ipset-members",
+        "/ns-groups/{ns-group-id}/effective-logical-port-members",
+        "/ns-groups/{ns-group-id}/effective-logical-switch-members",
+        "/ns-groups/{ns-group-id}/effective-transport-node-members",
+        "/ns-groups/{ns-group-id}/effective-vif-members",
+        "/ns-groups/{ns-group-id}/effective-virtual-machine-members",
+        "/ns-groups/{ns-group-id}/member-types",
+        "/ns-groups/{nsgroup-id}/service-associations",
+        "/trust-management/certificates",
+        "/trust-management/certificates/{cert-id}",
+      }\'',
+      "< ./data/nsxt_manager_api/nsxt_manager_api.json",
+      "> ./data/nsxt_manager_api/nsxt_manager_api_trimmed.json"
+    ].join(' ')
     #Patch NSX-T's OpenAPI to use a properly-escaped regex
     sh [
       "sed",
       "'s~\\[a-zA-Z0-9-.\\]~[a-zA-Z0-9.-]~g'",
-      "< ./data/nsxt_manager_api/nsxt_manager_api.json",
+      "< ./data/nsxt_manager_api/nsxt_manager_api_trimmed.json",
       "> ./data/nsxt_manager_api/nsxt_manager_api_escaped_regex.json"
     ].join(' ')
     #generate all models
@@ -67,6 +95,7 @@ namespace :swagger do
       "./lib/nsxt_manager_client/nsxt_manager_client.gemspec",
       "./lib/nsxt_manager_client/Rakefile",
       "./lib/nsxt_manager_client/nsxt_manager_client",
+      "./data/nsxt_manager_api/nsxt_manager_api_trimmed.json",
       "./data/nsxt_manager_api/nsxt_manager_api_escaped_regex.json"
     ])
   
@@ -92,11 +121,76 @@ namespace :swagger do
   task :nsxt_policy_client do
   
     rm_rf(["./lib/nsxt_policy_client/*"])
-  
-    #generate all models
+
+    # Trim unneeded endpoints; NSX-T 3.1.0 has 1299; we only need 8
+    sh [
+      "jq",
+      '\'.paths |= {
+        "/infra/domains/{domain-id}/groups/{group-id}",
+        "/infra/tier-1s/{tier-1-id}/segments/{segment-id}/ports/{port-id}",
+        "/infra/segments/{segment-id}/ports/{port-id}",
+        "/global-infra/virtual-machine-group-associations",
+        "/infra/lb-pools/{lb-pool-id}",
+        "/infra/lb-pools",
+        "/infra/realized-state/enforcement-points/{enforcement-point-name}/virtual-machines",
+        "/search/query",
+      }\'',
+      "< ./data/nsxt_policy_api/nsxt_policy_api.json",
+      "> ./data/nsxt_policy_api/nsxt_policy_api_trimmed_endpoints.json"
+    ].join(' ')
+
+    # Trim unneeded models/objects/definitions; NSX-T 3.1.0 has 1344; we only need 39
+    # Dependencies are indented. Dependencies only appear once.
+    sh [
+         "jq",
+         '\'.definitions |= {
+          "ResourceReference",
+            "PolicyResourceReference",
+          "Resource",
+            "ListResult",
+              "SearchResponse",
+            "DiscoveredResource",
+            "ResourceLink",
+            "SelfResourceLink",
+            "RevisionedResource",
+              "ManagedResource",
+                  "PolicyResource",
+                    "PolicyConfigResource",
+        "PolicyResourceReferenceForEPListResult",
+          "ListResult",
+          "PolicyResourceReferenceForEP",
+        "Group",
+          "PolicyConfigResource",
+          "Expression",
+            "Condition",
+            "ConjunctionOperator",
+            "NestedExpression",
+            "IPAddressExpression",
+            "MACAddressExpression",
+            "ExternalIDExpression",
+            "PathExpression",
+            "IdentityGroupExpression",
+        "SegmentPort",
+          "PortAttachment",
+          "SegmentExtraConfig",
+          "PortAddressBindingEntry",
+        "LBPoolListResult",
+        "LBPool",
+          "LBSnatTranslation",
+          "LBPoolMemberGroup",
+          "LBPoolMember",
+        "Tag",
+        "VirtualMachine",
+        "RelatedApiError",
+          "ApiError",
+      }\'',
+         "< ./data/nsxt_policy_api/nsxt_policy_api_trimmed_endpoints.json",
+         "> ./data/nsxt_policy_api/nsxt_policy_api_trimmed.json"
+       ].join(' ')
+
     sh [
       "swagger-codegen generate",
-      "-i ./data/nsxt_policy_api/nsxt_policy_api.json",
+      "-i ./data/nsxt_policy_api/nsxt_policy_api_trimmed.json",
       "-l ruby",
       "-o ./lib/nsxt_policy_client",
       "-c ./data/nsxt_policy_api/config.json -t ./data/swagger-nsxt-policy-template"
@@ -104,7 +198,7 @@ namespace :swagger do
   
     sh [
        "swagger-codegen generate",
-       "-i ./data/nsxt_policy_api/nsxt_policy_api.json",
+       "-i ./data/nsxt_policy_api/nsxt_policy_api_trimmed.json",
        "-l ruby",
        "-o ./lib/nsxt_policy_client",
        "-c ./data/nsxt_policy_api/config.json -t ./data/nsxt_policy_api/virtual_machine_patch",
@@ -114,7 +208,7 @@ namespace :swagger do
     #Patch Group which has wrong _deserialize method
     sh [
            "swagger-codegen generate",
-           "-i ./data/nsxt_policy_api/nsxt_policy_api.json",
+           "-i ./data/nsxt_policy_api/nsxt_policy_api_trimmed.json",
            "-l ruby",
            "-o ./lib/nsxt_policy_client",
            "-c ./data/nsxt_policy_api/config.json -t ./data/swagger-nsxt-template-deserialization",
@@ -129,7 +223,7 @@ namespace :swagger do
           "jq",
           "'.definitions.ResourceReference.properties.target_id.maxLength = 255'",
           "<",
-          "./data/nsxt_policy_api/nsxt_policy_api.json",
+          "./data/nsxt_policy_api/nsxt_policy_api_trimmed.json",
           ">",
           "./data/nsxt_policy_api/nsxt_policy_api_target_id_255.json",
     ].join(' ')
@@ -156,6 +250,8 @@ namespace :swagger do
       "./lib/nsxt_policy_client/Rakefile",
       "./lib/nsxt_policy_client/nsxt_policy_client",
       "./data/nsxt_policy_api/nsxt_policy_api_target_id_255.json",
+      "./data/nsxt_policy_api/nsxt_policy_api_trimmed.json",
+      "./data/nsxt_policy_api/nsxt_policy_api_trimmed_endpoints.json",
     ])
   
     mv("./lib/nsxt_policy_client/lib/nsxt_policy_client", "./lib/nsxt_policy_client/nsxt_policy_client")

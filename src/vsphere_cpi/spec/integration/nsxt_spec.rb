@@ -562,19 +562,19 @@ describe 'CPI', nsxt_all: true do
             expect(segment_names.length).to eq(2)
             expect(segment_names).to include(segment_1.name)
             expect(segment_names).to include(segment_2.name)
-            server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+            server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
             expect(server_pool_1.members.length).to eq(1)
             expect(server_pool_1.members[0].ip_address).to eq(vm.mob.guest&.ip_address)
             expect(server_pool_1.members[0].port).to eq("80")
-            server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_2.id)
+            server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool(pool_2.id)
             expect(server_pool_2.members.length).to eq(1)
             expect(server_pool_2.members[0].ip_address).to eq(vm.mob.guest&.ip_address)
             expect(server_pool_2.members[0].port).to eq(nil)
           end
 
-          server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+          server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
           expect(server_pool_1.members).to be_nil
-          server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_2.id)
+          server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool(pool_2.id)
           expect(server_pool_2.members).to be_nil
         end
 
@@ -591,26 +591,26 @@ describe 'CPI', nsxt_all: true do
                 expect(segment_names.length).to eq(2)
                 expect(segment_names).to include(segment_1.name)
                 expect(segment_names).to include(segment_2.name)
-                server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+                server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
                 expect(server_pool_1.members.length).to eq(1)
                 expect(server_pool_1.members[0].display_name).to eq(vm.cid)
-                server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_2.id)
+                server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool(pool_2.id)
                 expect(server_pool_2.members.length).to eq(1)
                 expect(server_pool_2.members[0].display_name).to eq(vm.cid)
 
-                unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool_0(unmanaged_pool.id)
+                unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool(unmanaged_pool.id)
                 expect(unmanaged_server_pool.members).to be_nil
                 add_vm_to_unmanaged_server_pool_with_policy_api(unmanaged_lb_pool.id, vm.mob.guest&.ip_address, 80)
-                unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool_0(unmanaged_pool.id)
+                unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool(unmanaged_pool.id)
                 expect(unmanaged_server_pool.members.length).to eq(1)
                 expect(unmanaged_server_pool.members[0].display_name).to_not eq(vm.cid)
               end
 
-              server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+              server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
               expect(server_pool_1.members).to be_nil
-              server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_2.id)
+              server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool(pool_2.id)
               expect(server_pool_2.members).to be_nil
-              unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool_0(unmanaged_pool.id)
+              unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool(unmanaged_pool.id)
               expect(unmanaged_server_pool.members.count).to eq(1)
             end
           end
@@ -624,27 +624,27 @@ describe 'CPI', nsxt_all: true do
                 expect(segment_names.length).to eq(2)
                 expect(segment_names).to include(segment_1.name)
                 expect(segment_names).to include(segment_2.name)
-                server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+                server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
                 expect(server_pool_1.members.length).to eq(1)
                 expect(server_pool_1.members[0].display_name).to eq(vm.cid)
-                server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_2.id)
+                server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool(pool_2.id)
                 expect(server_pool_2.members.length).to eq(1)
                 expect(server_pool_2.members[0].display_name).to eq(vm.cid)
 
                 set_cpi_metadata_version(cpi, vm.mob, cpi_metadata_version)
-                unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool_0(unmanaged_pool.id)
+                unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool(unmanaged_pool.id)
                 expect(unmanaged_server_pool.members).to be_nil
                 add_vm_to_unmanaged_server_pool_with_policy_api(unmanaged_lb_pool.id, vm.mob.guest&.ip_address, 80)
-                unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool_0(unmanaged_pool.id)
+                unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool(unmanaged_pool.id)
                 expect(unmanaged_server_pool.members.length).to eq(1)
                 expect(unmanaged_server_pool.members[0].display_name).to_not eq(vm.cid)
               end
 
-              server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+              server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
               expect(server_pool_1.members).to be_nil
-              server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_2.id)
+              server_pool_2 = @policy_load_balancer_pools_api.read_lb_pool(pool_2.id)
               expect(server_pool_2.members).to be_nil
-              unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool_0(unmanaged_pool.id)
+              unmanaged_server_pool = @policy_load_balancer_pools_api.read_lb_pool(unmanaged_pool.id)
               expect(unmanaged_server_pool.members).to be_nil
             end
           end
@@ -672,7 +672,7 @@ describe 'CPI', nsxt_all: true do
 
           let(:dynamic_pool) do
             member_group = NSXTPolicy::LBPoolMemberGroup.new(group_path: dynamic_pool_group.path)
-            @policy_load_balancer_pools_api.update_lb_pool_0('pool-id', NSXTPolicy::LBPool.new(id: 'pool-id', display_name: 'dynamic-pool', member_group: member_group))
+            @policy_load_balancer_pools_api.update_lb_pool('pool-id', NSXTPolicy::LBPool.new(id: 'pool-id', display_name: 'dynamic-pool', member_group: member_group))
           end
 
           after do
@@ -687,7 +687,7 @@ describe 'CPI', nsxt_all: true do
               expect(segment_names.length).to eq(2)
               expect(segment_names).to include(segment_1.name)
               expect(segment_names).to include(segment_2.name)
-              server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+              server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
               expect(server_pool_1.members.length).to eq(1)
               expect(server_pool_1.members[0].ip_address).to eq(vm.mob.guest&.ip_address)
               expect(server_pool_1.members[0].port).to eq("80")
@@ -701,7 +701,7 @@ describe 'CPI', nsxt_all: true do
               end
             end
 
-            server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+            server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
             expect(server_pool_1.members).to be_nil
 
             retryer do
@@ -1075,7 +1075,7 @@ describe 'CPI', nsxt_all: true do
           end
 
           #check that the VM was made a member of the server pool (no group)
-          server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+          server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
           expect(server_pool_1.members).to contain_exactly(an_object_having_attributes(port: "80", ip_address: vm.mob.guest&.ip_address))
 
           #tags both logical (management) and segment (policy) ports with metadata for policy-created-vms.
@@ -1132,7 +1132,7 @@ describe 'CPI', nsxt_all: true do
         end
 
         #check that the VM was removed from the server pool
-        server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+        server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
         expect(server_pool_1.members).to be_nil
 
         policy_cpi.cleanup
@@ -1187,7 +1187,7 @@ describe 'CPI', nsxt_all: true do
           end
 
           #check that the VM was made a member of the server pool (no group)
-          server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+          server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
           expect(server_pool_1.members).to contain_exactly(an_object_having_attributes(port: "80", ip_address: vm.mob.guest&.ip_address))
 
           #tags both logical (management) and segment (policy) ports with metadata for policy-created-vms.
@@ -1244,7 +1244,7 @@ describe 'CPI', nsxt_all: true do
         end
 
         #check that the VM was removed from the server pool
-        server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool_0(pool_1.id)
+        server_pool_1 = @policy_load_balancer_pools_api.read_lb_pool(pool_1.id)
         expect(server_pool_1.members).to be_nil
 
         migration_cpi.cleanup
@@ -1624,7 +1624,7 @@ describe 'CPI', nsxt_all: true do
   end
 
   def create_lb_pool(pool)
-    @policy_load_balancer_pools_api.update_lb_pool_0(pool.id, NSXTPolicy::LBPool.new(id: pool.id, display_name: pool.name))
+    @policy_load_balancer_pools_api.update_lb_pool(pool.id, NSXTPolicy::LBPool.new(id: pool.id, display_name: pool.name))
   end
 
   def delete_lb_pool(pool)
@@ -1638,9 +1638,9 @@ describe 'CPI', nsxt_all: true do
   end
 
   def add_vm_to_unmanaged_server_pool_with_policy_api(server_pool_id, vm_ip, port_no)
-    load_balancer_pool = @policy_load_balancer_pools_api.read_lb_pool_0(server_pool_id)
+    load_balancer_pool = @policy_load_balancer_pools_api.read_lb_pool(server_pool_id)
     (load_balancer_pool.members ||= []).push(NSXTPolicy::LBPoolMember.new(port: port_no, ip_address: vm_ip, display_name: 'not-a-vm-cid'))
-    @policy_load_balancer_pools_api.update_lb_pool_0(server_pool_id, load_balancer_pool)
+    @policy_load_balancer_pools_api.update_lb_pool(server_pool_id, load_balancer_pool)
   end
 
   def retryer

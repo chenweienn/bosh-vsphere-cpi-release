@@ -19,60 +19,6 @@ module NSXT
     def initialize(api_client = ApiClient.default)
       @api_client = api_client
     end
-    # Add a New Certificate
-    # Adds a new private-public certificate or a chain of certificates (CAs) and, optionally, a private key that can be applied to one of the user-facing components (appliance management or edge). The certificate and the key should be stored in PEM format. If no private key is provided, the certificate is used as a client certificate in the trust store. 
-    # @param trust_object_data 
-    # @param [Hash] opts the optional parameters
-    # @return [CertificateList]
-    def add_certificate_import(trust_object_data, opts = {})
-      data, _status_code, _headers = add_certificate_import_with_http_info(trust_object_data, opts)
-      data
-    end
-
-    # Add a New Certificate
-    # Adds a new private-public certificate or a chain of certificates (CAs) and, optionally, a private key that can be applied to one of the user-facing components (appliance management or edge). The certificate and the key should be stored in PEM format. If no private key is provided, the certificate is used as a client certificate in the trust store. 
-    # @param trust_object_data 
-    # @param [Hash] opts the optional parameters
-    # @return [Array<(CertificateList, Fixnum, Hash)>] CertificateList data, response status code and response headers
-    def add_certificate_import_with_http_info(trust_object_data, opts = {})
-      if @api_client.config.debugging
-        @api_client.config.logger.debug 'Calling API: ManagementPlaneApiNsxComponentAdministrationTrustManagementCertificateApi.add_certificate_import ...'
-      end
-      # verify the required parameter 'trust_object_data' is set
-      if @api_client.config.client_side_validation && trust_object_data.nil?
-        fail ArgumentError, "Missing the required parameter 'trust_object_data' when calling ManagementPlaneApiNsxComponentAdministrationTrustManagementCertificateApi.add_certificate_import"
-      end
-      # resource path
-      local_var_path = '/trust-management/certificates?action=import'
-
-      # query parameters
-      query_params = {}
-
-      # header parameters
-      header_params = {}
-      # HTTP header 'Accept' (if needed)
-      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
-      # HTTP header 'Content-Type'
-      header_params['Content-Type'] = @api_client.select_header_content_type(['application/json'])
-
-      # form parameters
-      form_params = {}
-
-      # http body (model)
-      post_body = @api_client.object_to_http_body(trust_object_data)
-      auth_names = ['BasicAuth']
-      data, status_code, headers = @api_client.call_api(:POST, local_var_path,
-        :header_params => header_params,
-        :query_params => query_params,
-        :form_params => form_params,
-        :body => post_body,
-        :auth_names => auth_names,
-        :return_type => 'CertificateList')
-      if @api_client.config.debugging
-        @api_client.config.logger.debug "API called: ManagementPlaneApiNsxComponentAdministrationTrustManagementCertificateApi#add_certificate_import\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
-      end
-      return data, status_code, headers
-    end
     # Delete Certificate for the Given Certificate ID
     # Removes the specified certificate. The private key associated with the certificate is also deleted. 
     # @param cert_id ID of certificate to delete
