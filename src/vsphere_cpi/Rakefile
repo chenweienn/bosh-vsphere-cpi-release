@@ -8,7 +8,7 @@ namespace :swagger do
   
     rm_rf(["./lib/nsxt_manager_client/*"])
 
-    # Trim unneeded endpoints; NSX-T 2.5.1 has 872, we only need 20
+    # Trim unneeded endpoints; NSX-T 2.5.1 has 872, we only need 23
     sh [
       "jq",
       '\'.paths |= {
@@ -32,6 +32,9 @@ namespace :swagger do
         "/ns-groups/{nsgroup-id}/service-associations",
         "/trust-management/certificates",
         "/trust-management/certificates/{cert-id}",
+        "/trust-management/principal-identities",
+        "/trust-management/principal-identities/with-certificate",
+        "/trust-management/principal-identities/{principal-identity-id}",
       }\'',
       "< ./data/nsxt_manager_api/nsxt_manager_api.json",
       "> ./data/nsxt_manager_api/nsxt_manager_api_trimmed.json"
