@@ -37,8 +37,67 @@ namespace :swagger do
         "/trust-management/principal-identities/{principal-identity-id}",
       }\'',
       "< ./data/nsxt_manager_api/nsxt_manager_api.json",
-      "> ./data/nsxt_manager_api/nsxt_manager_api_trimmed.json"
+      "> ./data/nsxt_manager_api/nsxt_manager_api_trimmed_endpoints.json"
     ].join(' ')
+
+    # Trim unneeded models/objects/definitions; NSX-T 2.5.1 has 1260; we only need xx
+    # Dependencies are indented. Dependencies only appear once.
+    sh [
+         "jq",
+         '\'.paths |= {
+        "ResourceLink",
+          "SelfResourceLink",
+            "Resource",
+              "RevisionedResource",
+                "ManagedResource",
+              "DiscoveredResource",
+                "Tag",
+              "ListResult",
+                "VirtualNetworkInterfaceListResult",
+                  "VirtualNetworkInterface",
+                    "IpAddressInfo",
+                "VirtualMachineListResult",
+                  "VirtualMachine",
+                    "ResourceReference",
+                    "GuestInfo",
+                "EffectiveMemberResourceListResult",
+                "UnassociatedVMListResult",
+                "EffectiveIPAddressMemberListResult",
+                "NSGroupListResult",
+                "EffectiveMemberTypeListResult",
+                "ServiceAssociationListResult",
+                "CertificateList",
+                  "Certificate",
+                    "NodeIdServicesMap",
+                    "X509Certificate",
+        "LbPool",
+          "PoolMemberGroup",
+          "LbSnatTranslation",
+          "PoolMember",
+        "PoolMemberSettingList",
+          "PoolMemberSetting",
+        "LogicalPort",
+          "SwitchingProfileTypeIdEntry",
+          "LogicalPortAttachment",
+            "AttachmentContext",
+          "ExtraConfig",
+            "KeyValuePair",
+          "PacketAddressClassifier",
+        "NSGroup",
+          "NSGroupExpressionList",
+            "NSGroupExpression",
+              "NSGroupSimpleExpression",
+              "NSGroupComplexExpression",
+              "NSGroupTagExpression",
+        "TrustObjectData",
+        "PrincipalIdentity",
+        "PrincipalIdentityWithCertificate",
+        "UpdatePrincipalIdentityCertificateRequest",
+      }\'',
+         "< ./data/nsxt_manager_api/nsxt_manager_api_trimmed_endpoints.json",
+         "> ./data/nsxt_manager_api/nsxt_manager_api_trimmed.json"
+       ].join(' ')
+
     #Patch NSX-T's OpenAPI to use a properly-escaped regex
     sh [
       "sed",
@@ -99,6 +158,7 @@ namespace :swagger do
       "./lib/nsxt_manager_client/Rakefile",
       "./lib/nsxt_manager_client/nsxt_manager_client",
       "./data/nsxt_manager_api/nsxt_manager_api_trimmed.json",
+      "./data/nsxt_manager_api/nsxt_manager_api_trimmed_endpoints.json",
       "./data/nsxt_manager_api/nsxt_manager_api_escaped_regex.json"
     ])
   
