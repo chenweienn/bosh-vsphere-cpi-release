@@ -19,6 +19,60 @@ module NSXT
     def initialize(api_client = ApiClient.default)
       @api_client = api_client
     end
+    # Create a Logical Port
+    # Creates a new logical switch port. The required parameters are the associated logical_switch_id and admin_state (UP or DOWN). Optional parameters are the attachment and switching_profile_ids. If you don't specify switching_profile_ids, default switching profiles are assigned to the port. If you don't specify an attachment, the switch port remains empty. To configure an attachment, you must specify an id, and optionally you can specify an attachment_type (VIF or LOGICALROUTER). The attachment_type is VIF by default. 
+    # @param logical_port 
+    # @param [Hash] opts the optional parameters
+    # @return [LogicalPort]
+    def create_logical_port(logical_port, opts = {})
+      data, _status_code, _headers = create_logical_port_with_http_info(logical_port, opts)
+      data
+    end
+
+    # Create a Logical Port
+    # Creates a new logical switch port. The required parameters are the associated logical_switch_id and admin_state (UP or DOWN). Optional parameters are the attachment and switching_profile_ids. If you don&#39;t specify switching_profile_ids, default switching profiles are assigned to the port. If you don&#39;t specify an attachment, the switch port remains empty. To configure an attachment, you must specify an id, and optionally you can specify an attachment_type (VIF or LOGICALROUTER). The attachment_type is VIF by default. 
+    # @param logical_port 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(LogicalPort, Fixnum, Hash)>] LogicalPort data, response status code and response headers
+    def create_logical_port_with_http_info(logical_port, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: ManagementPlaneApiLogicalSwitchingLogicalSwitchPortsApi.create_logical_port ...'
+      end
+      # verify the required parameter 'logical_port' is set
+      if @api_client.config.client_side_validation && logical_port.nil?
+        fail ArgumentError, "Missing the required parameter 'logical_port' when calling ManagementPlaneApiLogicalSwitchingLogicalSwitchPortsApi.create_logical_port"
+      end
+      # resource path
+      local_var_path = '/logical-ports'
+
+      # query parameters
+      query_params = {}
+
+      # header parameters
+      header_params = {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+      # HTTP header 'Content-Type'
+      header_params['Content-Type'] = @api_client.select_header_content_type(['application/json'])
+
+      # form parameters
+      form_params = {}
+
+      # http body (model)
+      post_body = @api_client.object_to_http_body(logical_port)
+      auth_names = ['BasicAuth']
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path,
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => 'LogicalPort')
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: ManagementPlaneApiLogicalSwitchingLogicalSwitchPortsApi#create_logical_port\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
     # Delete a Logical Port
     # Deletes the specified logical switch port. By default, if logical port has attachments, or it is added to any NSGroup, the deletion will be failed. Option detach could be used for deleting logical port forcibly. 
     # @param lport_id 
@@ -126,6 +180,110 @@ module NSXT
         :return_type => 'LogicalPort')
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: ManagementPlaneApiLogicalSwitchingLogicalSwitchPortsApi#get_logical_port\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+    # List All Logical Ports
+    # Returns information about all configured logical switch ports. Logical switch ports connect to VM virtual network interface cards (NICs). Each logical port is associated with one logical switch. 
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :attachment_id Logical Port attachment Id
+    # @option opts [String] :attachment_type Type of attachment for logical port; for query only.
+    # @option opts [String] :bridge_cluster_id Bridge Cluster identifier
+    # @option opts [BOOLEAN] :container_ports_only Only container VIF logical ports will be returned if true (default to false)
+    # @option opts [String] :cursor Opaque cursor to be used for getting next page of records (supplied by current result page)
+    # @option opts [BOOLEAN] :diagnostic Flag to enable showing of transit logical port. (default to false)
+    # @option opts [String] :included_fields Comma separated list of fields that should be included in query result
+    # @option opts [String] :logical_switch_id Logical Switch identifier
+    # @option opts [Integer] :page_size Maximum number of results to return in this page (server may return fewer) (default to 1000)
+    # @option opts [String] :parent_vif_id ID of the VIF of type PARENT
+    # @option opts [BOOLEAN] :sort_ascending 
+    # @option opts [String] :sort_by Field by which records are sorted
+    # @option opts [String] :switching_profile_id Network Profile identifier
+    # @option opts [String] :transport_node_id Transport node identifier
+    # @option opts [String] :transport_zone_id Transport zone identifier
+    # @return [LogicalPortListResult]
+    def list_logical_ports(opts = {})
+      data, _status_code, _headers = list_logical_ports_with_http_info(opts)
+      data
+    end
+
+    # List All Logical Ports
+    # Returns information about all configured logical switch ports. Logical switch ports connect to VM virtual network interface cards (NICs). Each logical port is associated with one logical switch. 
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :attachment_id Logical Port attachment Id
+    # @option opts [String] :attachment_type Type of attachment for logical port; for query only.
+    # @option opts [String] :bridge_cluster_id Bridge Cluster identifier
+    # @option opts [BOOLEAN] :container_ports_only Only container VIF logical ports will be returned if true
+    # @option opts [String] :cursor Opaque cursor to be used for getting next page of records (supplied by current result page)
+    # @option opts [BOOLEAN] :diagnostic Flag to enable showing of transit logical port.
+    # @option opts [String] :included_fields Comma separated list of fields that should be included in query result
+    # @option opts [String] :logical_switch_id Logical Switch identifier
+    # @option opts [Integer] :page_size Maximum number of results to return in this page (server may return fewer)
+    # @option opts [String] :parent_vif_id ID of the VIF of type PARENT
+    # @option opts [BOOLEAN] :sort_ascending 
+    # @option opts [String] :sort_by Field by which records are sorted
+    # @option opts [String] :switching_profile_id Network Profile identifier
+    # @option opts [String] :transport_node_id Transport node identifier
+    # @option opts [String] :transport_zone_id Transport zone identifier
+    # @return [Array<(LogicalPortListResult, Fixnum, Hash)>] LogicalPortListResult data, response status code and response headers
+    def list_logical_ports_with_http_info(opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: ManagementPlaneApiLogicalSwitchingLogicalSwitchPortsApi.list_logical_ports ...'
+      end
+      if @api_client.config.client_side_validation && opts[:'attachment_type'] && !['VIF', 'LOGICALROUTER', 'BRIDGEENDPOINT', 'DHCP_SERVICE', 'METADATA_PROXY', 'L2VPN_SESSION', 'NONE'].include?(opts[:'attachment_type'])
+        fail ArgumentError, 'invalid value for "attachment_type", must be one of VIF, LOGICALROUTER, BRIDGEENDPOINT, DHCP_SERVICE, METADATA_PROXY, L2VPN_SESSION, NONE'
+      end
+      if @api_client.config.client_side_validation && !opts[:'page_size'].nil? && opts[:'page_size'] > 1000
+        fail ArgumentError, 'invalid value for "opts[:"page_size"]" when calling ManagementPlaneApiLogicalSwitchingLogicalSwitchPortsApi.list_logical_ports, must be smaller than or equal to 1000.'
+      end
+
+      if @api_client.config.client_side_validation && !opts[:'page_size'].nil? && opts[:'page_size'] < 0
+        fail ArgumentError, 'invalid value for "opts[:"page_size"]" when calling ManagementPlaneApiLogicalSwitchingLogicalSwitchPortsApi.list_logical_ports, must be greater than or equal to 0.'
+      end
+
+      # resource path
+      local_var_path = '/logical-ports'
+
+      # query parameters
+      query_params = {}
+      query_params[:'attachment_id'] = opts[:'attachment_id'] if !opts[:'attachment_id'].nil?
+      query_params[:'attachment_type'] = opts[:'attachment_type'] if !opts[:'attachment_type'].nil?
+      query_params[:'bridge_cluster_id'] = opts[:'bridge_cluster_id'] if !opts[:'bridge_cluster_id'].nil?
+      query_params[:'container_ports_only'] = opts[:'container_ports_only'] if !opts[:'container_ports_only'].nil?
+      query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
+      query_params[:'diagnostic'] = opts[:'diagnostic'] if !opts[:'diagnostic'].nil?
+      query_params[:'included_fields'] = opts[:'included_fields'] if !opts[:'included_fields'].nil?
+      query_params[:'logical_switch_id'] = opts[:'logical_switch_id'] if !opts[:'logical_switch_id'].nil?
+      query_params[:'page_size'] = opts[:'page_size'] if !opts[:'page_size'].nil?
+      query_params[:'parent_vif_id'] = opts[:'parent_vif_id'] if !opts[:'parent_vif_id'].nil?
+      query_params[:'sort_ascending'] = opts[:'sort_ascending'] if !opts[:'sort_ascending'].nil?
+      query_params[:'sort_by'] = opts[:'sort_by'] if !opts[:'sort_by'].nil?
+      query_params[:'switching_profile_id'] = opts[:'switching_profile_id'] if !opts[:'switching_profile_id'].nil?
+      query_params[:'transport_node_id'] = opts[:'transport_node_id'] if !opts[:'transport_node_id'].nil?
+      query_params[:'transport_zone_id'] = opts[:'transport_zone_id'] if !opts[:'transport_zone_id'].nil?
+
+      # header parameters
+      header_params = {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+      # HTTP header 'Content-Type'
+      header_params['Content-Type'] = @api_client.select_header_content_type(['application/json'])
+
+      # form parameters
+      form_params = {}
+
+      # http body (model)
+      post_body = nil
+      auth_names = ['BasicAuth']
+      data, status_code, headers = @api_client.call_api(:GET, local_var_path,
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => 'LogicalPortListResult')
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: ManagementPlaneApiLogicalSwitchingLogicalSwitchPortsApi#list_logical_ports\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
