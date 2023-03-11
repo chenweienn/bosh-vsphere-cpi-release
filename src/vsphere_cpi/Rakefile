@@ -142,6 +142,7 @@ namespace :swagger do
         "QosBaseRateShaper",
         "QosSwitchingProfile",
         "RateLimits",
+        "RelatedApiError",
         "Resource",
         "ResourceAllocation",
         "ResourceLink",
@@ -290,6 +291,7 @@ namespace :swagger do
       'jq',
       '\'.definitions |= {
         "AttachedInterfaceEntry",
+        "ApiError",
         "BridgeProfileConfig",
         "ChildPolicyConfigResource",
         "ClasslessStaticRoute",
@@ -335,6 +337,7 @@ namespace :swagger do
         "PoolMemberSetting",
         "PortAddressBindingEntry",
         "PortAttachment",
+        "RelatedApiError",
         "Resource",
         "ResourceLink",
         "ResourceReference",
