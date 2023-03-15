@@ -12,6 +12,9 @@ Swagger Codegen version: 2.4.19
 
 require 'uri'
 
+# my debugging
+require 'logger'
+
 module NSXTPolicy
   class PolicyNetworkingNetworkServicesLoadBalancingLoadBalancerPoolsApi
     attr_accessor :api_client
@@ -458,6 +461,13 @@ module NSXTPolicy
     # @return [LBPool]
     def read_lb_pool_0(lb_pool_id, opts = {})
       data, _status_code, _headers = read_lb_pool_0_with_http_info(lb_pool_id, opts)
+
+      # my debugging
+      get_response = @api_client.object_to_http_body(data)
+      logger = Logger.new(STDERR)
+      logger.info("MYDEBUG:DATA_INSPECT:#{data.inspect}")
+      logger.info("MYDEBUG:GET_RESP:#{get_response}")
+
       data
     end
 
@@ -612,6 +622,11 @@ module NSXTPolicy
 
       # http body (model)
       post_body = @api_client.object_to_http_body(lb_pool)
+
+      # my debugging
+      logger2 = Logger.new(STDERR)
+      logger2.info("MYDEBUG:POST_BODY:#{post_body}")
+
       auth_names = ['BasicAuth']
       data, status_code, headers = @api_client.call_api(:PUT, local_var_path,
         :header_params => header_params,

@@ -77,6 +77,9 @@ module NSXTPolicy
 
       if opts[:return_type]
         data = deserialize(response, opts[:return_type])
+        # my debugging
+        logger4 = Logger.new(STDERR)
+        logger4.info("MYDEBUG:AFTER_DESERIALIZE:[#{data.inspect}]")
       else
         data = nil
       end
@@ -184,6 +187,10 @@ module NSXTPolicy
       fail "Content-Type is not supported: #{content_type}" unless json_mime?(content_type)
 
       begin
+        # my debugging
+        logger3 = Logger.new(STDERR)
+        logger3.info("MYDEBUG:BEFORE_DESERIALIZE:[#{body}]")
+
         data = JSON.parse("[#{body}]", :symbolize_names => true)[0]
       rescue JSON::ParserError => e
         if %w(String Date DateTime).include?(return_type)
